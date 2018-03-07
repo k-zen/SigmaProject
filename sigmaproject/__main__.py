@@ -86,7 +86,7 @@ def main(argv=None):
             )
             if not opts:
                 usage()
-        except getopt.error, msg:
+        except getopt.error as msg:
             raise Usage(msg)
 
         # DEBUG:
@@ -122,7 +122,7 @@ def main(argv=None):
             else:
                 print(utils.Colors.FAIL + "ERROR: The type is invalid." + utils.Colors.ENDC)
                 return 2
-    except Usage, err:
+    except Usage as err:
         print(utils.Colors.FAIL + "ERROR: {0}".format(err.msg) + utils.Colors.ENDC)
         print(utils.Colors.BOLD + "INFO: For help use --help" + utils.Colors.ENDC)
         return 2
