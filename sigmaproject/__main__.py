@@ -41,7 +41,7 @@ Flags:
 """
 
 import sigmaproject.utils as utils
-import sigmaproject.monte_carlo as monte_carlo
+import sigmaproject.montecarlo as montecarlo
 import getopt
 import sys
 
@@ -118,7 +118,7 @@ def main(argv=None):
                 return 2
 
             if type == 1:
-                monte_carlo.MonteCarlo.area_under_curve(iterations, function, xa, xb)
+                montecarlo.MonteCarlo.area_under_curve(iterations, function, xa, xb)
             else:
                 print(utils.Colors.FAIL + "ERROR: The type is invalid." + utils.Colors.ENDC)
                 return 2

@@ -3,7 +3,7 @@
 """
 Class to perform Monte Carlo simulations.
 
-.. module:: monte_carlo
+.. module:: montecarlo
    :platform: Unix
    :synopsis: Monte Carlo functions.
 
