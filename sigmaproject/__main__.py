@@ -22,7 +22,7 @@ Options:
     ===========
     -t The type of calculation to perform. Posible values are:
 
-        Type #1:
+        Type #1: Numerical Integration
         ========
         Calculate the area under the curve defined by parameter *f*
         and between the interval (b - a).
