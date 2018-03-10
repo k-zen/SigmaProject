@@ -9,19 +9,17 @@
 
 Uses:
 =====
-sigmaproject [--monte-carlo] [-t=type] [i=1000]
-
-    For type 1:
-    ===========
-    [-f=function] [-a=0] [-b=1]
+sigmaproject [--monte-carlo] [-t=type] [i=1000] [-f=function] [-a=0] [-b=1] [--plot]
 
 Options:
 ========
+    Available Functions:
+    ====================
     --monte-carlo Uses the "Monte Carlo" procedure to estimate some value
                   defined by the parameter *-t*.
 
-    ---
-
+    Parameters:
+    ===========
     -t The type of calculation to perform. Posible values are:
 
         Type #1:
@@ -33,7 +31,9 @@ Options:
     -a The X coordinate of *a*. Must the smaller than *b*.
     -b The X coordinate of *b*. Must be bigger than *a*.
 
-    ---
+    Others:
+    =======
+    --plot Plot the aproximation using a scatter plot.
 
 Flags:
 ======
@@ -71,6 +71,7 @@ def main(argv=None):
     function = ""
     xa = -1.0
     xb = -1.0
+    plot = False
 
     if argv is None:
         argv = sys.argv
@@ -81,7 +82,8 @@ def main(argv=None):
                 "t:i:f:a:b:",
                 [
                     "help",
-                    "monte-carlo"
+                    "monte-carlo",
+                    "plot"
                 ]
             )
             if not opts:
@@ -97,6 +99,8 @@ def main(argv=None):
                 usage()
             elif opt == "--monte-carlo":
                 command = 1
+            elif opt == "--plot":
+                plot = True
             elif opt == "-t":
                 type = int(arg)
             elif opt == "-i":
@@ -118,7 +122,7 @@ def main(argv=None):
                 return 2
 
             if type == 1:
-                montecarlo.MonteCarlo.area_under_curve(iterations, function, xa, xb)
+                montecarlo.MonteCarlo.area_under_curve(iterations, function, xa, xb, plot)
             else:
                 print(utils.Colors.FAIL + "ERROR: The type is invalid." + utils.Colors.ENDC)
                 return 2
