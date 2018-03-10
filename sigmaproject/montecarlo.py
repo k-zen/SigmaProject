@@ -13,6 +13,8 @@ Class to perform Monte Carlo simulations.
 import sigmaproject.utils as utils
 import random
 
+from math import *
+
 __author__ = "Andreas P. Koenzen"
 __copyright__ = "Copyright 2018. Andreas P. Koenzen"
 __credits__ = "Andreas P. Koenzen"
@@ -41,11 +43,14 @@ class MonteCarlo:
         """
         Uses the Monte Carlo procedure to compute the area under the curve for
         a given function (Numerical integration). The logic for this method was extracted
-        from `this <https://www.scratchapixel.com/lessons/mathematics-physics-for-computer-graphics/monte-carlo-methods-in-practice/monte-carlo-integration>`_
-        URL.
+        from `<https://www.scratchapixel.com/lessons/mathematics-physics-for-computer-graphics/monte-carlo-methods-in-practice/monte-carlo-integration>`_.
 
-        See `this <http://people.math.sc.edu/meade/Bb-CalcI-WMI/Unit5/HTML-GIF/MVTIntegral.html>`_ site for more
+        See `<http://people.math.sc.edu/meade/Bb-CalcI-WMI/Unit5/HTML-GIF/MVTIntegral.html>`_ for more
         information about the "Average Value of a Function".
+
+        ``Example``::
+
+            $ python -m sigmaproject --monte-carlo -t 1 -i 1000000 -f "sin(x) + (1/3 * sin(3*x))" -a 0 -b 3.141592653589793
 
         :param iterations: How many iterations to make.
         :param function:   The f(x)
