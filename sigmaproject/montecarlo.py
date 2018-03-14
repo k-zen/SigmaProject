@@ -77,9 +77,6 @@ class MonteCarlo:
 
         ev = ((xb - xa) / n) * sum
 
-        if plot == True:
-        # TODO
-
         print(utils.Colors.BOLD + "=======" + utils.Colors.ENDC)
         print(utils.Colors.BOLD + "RESULT:" + utils.Colors.ENDC)
         print(utils.Colors.BOLD + "> Area of E: \"{0}\"".format(ev) + utils.Colors.ENDC)
