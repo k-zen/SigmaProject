@@ -6,7 +6,7 @@
 
 Uses:
 =====
-sigmaproject [--monte-carlo] [-t=type] [i=1000] [-f=function] [-a=0] [-b=1] [--plot]
+sigmaproject [--monte-carlo] [-t=type] [i=1000] [-f=function] [-a=0] [-b=1]
 
 Options:
 ========
