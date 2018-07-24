@@ -42,3 +42,4 @@ tmtagsHistory
 SigmaProject.egg-info/
 dist/
 docs/
+venv*
