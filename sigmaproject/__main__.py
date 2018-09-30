@@ -168,8 +168,7 @@ def main(argv=None):
             elif opt == '-b':
                 xb = float(arg)
 
-        # tomar la decision.
-        if command == 1:
+        if command == 1:  # Monte Carlo
             if function == '':
                 print(utils.Colors.FAIL + 'ERROR: Function not defined.' + utils.Colors.ENDC)
                 return 2
@@ -182,35 +181,35 @@ def main(argv=None):
             else:
                 print(utils.Colors.FAIL + 'ERROR: The type is invalid.' + utils.Colors.ENDC)
                 return 2
-        elif command == 2:
+        elif command == 2:  # Bayes
             if type == 1:
                 cookie.Cookie.compute()
             else:
                 print(utils.Colors.FAIL + 'ERROR: The type is invalid.' + utils.Colors.ENDC)
                 return 2
-        elif command == 3:
+        elif command == 3:  # Classifier
             if type == 1:
-                if input == "" or output == "":
+                if False and (input == "" or output == ""):  # disable this for the moment. only deal with static urls
                     print(utils.Colors.FAIL + 'ERROR: Input or output not defined.' + utils.Colors.ENDC)
                     return 2
 
-                nbtc.NaiveBayesTextClassifier()
+                nbtc.NaiveBayesTextClassifier().classify(model=nbtc.NaiveBayesTextClassifier().train())
             else:
                 print(utils.Colors.FAIL + 'ERROR: The type is invalid.' + utils.Colors.ENDC)
                 return 2
-        elif command == 4:
+        elif command == 4:  # Regression
             if type == 1:
                 return 2
             else:
                 print(utils.Colors.FAIL + 'ERROR: The type is invalid.' + utils.Colors.ENDC)
                 return 2
-        elif command == 5:
+        elif command == 5:  # TensorFlow
             if type == 1:
                 return 2
             else:
                 print(utils.Colors.FAIL + 'ERROR: The type is invalid.' + utils.Colors.ENDC)
                 return 2
-        elif command == 6:
+        elif command == 6:  # Clustering
             if type == 1:
                 return 2
             else:
