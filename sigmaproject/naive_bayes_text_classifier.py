@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
 
-import sigmaproject.utils as utils
 import pandas as pd
 import requests as rq
+import nltk
+
+from colorama import Fore, Back, Style
+from nltk.corpus import stopwords
 
 
 class NBClassification(object):
@@ -24,15 +27,24 @@ class NBTerm(object):
 
 
 class NBDocument(object):
-    def __init__(self, terms: [NBTerm]):
-        self.terms: [NBTerm] = terms
+    USE_FILTERED: bool = False
+
+    def __init__(self, raw_terms: [NBTerm], filtered_terms: [NBTerm]):
+        self.raw_terms: [NBTerm] = raw_terms  # stopwords included
+        self.filtered_terms: [NBTerm] = filtered_terms  # stopwords removed
 
     def __repr__(self):
-        str = "\t\t\tTerms: {}\n".format(len(self.terms))
-        for t in self.terms:
+        str = "\t\t\tTerms: {}\n".format(len(self.get_terms()))
+        for t in self.get_terms():
             str += "\t\t\t{}\n".format(t)
 
         return str
+
+    def get_terms(self):
+        if NBDocument.USE_FILTERED:
+            return self.filtered_terms
+        else:
+            return self.raw_terms
 
 
 class NBClass(object):
@@ -41,9 +53,11 @@ class NBClass(object):
         self.documents: [NBDocument] = []
         self.prior: float = 0.0
         self.likelihoods: [NBTerm] = []
-        """
-        A list containing the likelihoods for all terms in the class. 
-        """
+        self.name: str = ""
+        if self.label == '0':
+            self.name = 'Wise Saying'
+        elif self.label == '1':
+            self.name = 'Future'
 
     def __repr__(self):
         str = "\tClass Label: {}\n".format(self.label)
@@ -60,13 +74,14 @@ class NBClass(object):
     def add_create_document(self, message: str) -> None:
         # break the document into terms
         terms = message.split(' ')
-        terms = [NBTerm(term=t) for t in terms]
-        self.documents.append(NBDocument(terms=terms))
+        raw_terms = [NBTerm(term=t) for t in terms]
+        filtered_terms = [NBTerm(term=t) for t in terms if t not in stopwords.words('english')]
+        self.documents.append(NBDocument(raw_terms=raw_terms, filtered_terms=filtered_terms))
 
     def compute_likelihood(self, lexicon: [str]) -> None:
         # compute unique and all terms in all documents in the class
-        unique_terms = list({t.term for d in self.documents for t in d.terms})
-        all_terms = [t.term for d in self.documents for t in d.terms]
+        unique_terms = list({t.term for d in self.documents for t in d.get_terms()})
+        all_terms = [t.term for d in self.documents for t in d.get_terms()]
 
         # now for each term in unique compute its likelihood and add to the list of likelihoods
         # likelihood = occurrences of term / all terms
@@ -92,25 +107,28 @@ class NBClass(object):
     def get_class_lexicon(self) -> [str]:
         lexicon = []
         for d in self.documents:
-            for t in d.terms:
+            for t in d.get_terms():
                 if t.term not in lexicon:
                     lexicon.append(t.term)
 
         return lexicon
 
+    @staticmethod
+    def get_class_name(label: str):
+        if label == '0':
+            return 'Wise Saying'
+        elif label == '1':
+            return 'Future'
+
+        return 'None'
+
 
 class NBModel(object):
     DEBUG = False
-    """
-    boolean: Flag to enable debug mode.
-    """
 
     def __init__(self):
         self.classes: [NBClass] = []
-        self.lexicon: [str] = []
-        """
-        Vocabulary of UNIQUE words in ALL documents.
-        """
+        self.lexicon: [str] = []  # vocabulary of UNIQUE words in ALL documents
 
     def __repr__(self):
         str = "Classes: {}\n".format(len(self.classes))
@@ -137,21 +155,14 @@ class NBModel(object):
         # update prior
         self.get_class(label=label).prior = N_c / N
 
+        # +++ DEBUG
         if NBModel.DEBUG:
             print("PRIOR for class {0} is {1}.".format(label, N_c / N))
             print("N_c: {0}, N: {1}".format(N_c, N))
 
     def compute_lexicon(self) -> None:
-        """
-        Vocabulary should NOT contain duplicates.
-
-        :return: None
-        """
-        for c in self.classes:
-            for d in c.documents:
-                for t in d.terms:
-                    if t.term not in self.lexicon:
-                        self.lexicon.append(t.term)
+        # vocabulary should NOT contain duplicates
+        self.lexicon = [[[t for t in d.get_terms() if t.term not in self.lexicon] for d in c.documents] for c in self.classes]
 
     def compute_likelihood(self) -> None:
         for c in self.classes:
@@ -160,43 +171,26 @@ class NBModel(object):
 
 class NaiveBayesTextClassifier(object):
     """
-    Text classifier using the Naïve Bayes Classifier.
+    Text classifier using the Naïve Bayes Classifier. This classifier supports only 2 classes, so it's a
+    binary classifier.
     """
 
     DEBUG = False
-    """
-    boolean: Flag to enable debug mode.
-    """
     SHOW_MODEL = False
     MAKE_SUBSET_FOR_TRAINING = False
     TRAINING_SUBSET_SIZE = 2
-    """
-    boolean: Flag to enable only a subset of the entire dataset.
-    """
-    MAKE_SUBSET_FOR_TESTING = True
+    MAKE_SUBSET_FOR_TESTING = False
     TESTING_SUBSET_SIZE = 40
-    """
-    boolean: Flag to enable only a subset of the entire dataset.
-    """
 
     def __init__(self):
         self.model: NBModel = NBModel()
         pass
 
-    def train(self,
-              training_set: [str] = [],
-              debug: bool = False) -> NBModel:
-        """
-        Function to create a statistical model used in the classification function.
+    def train(self, training_set: [str] = [], debug: bool = False) -> NBModel:
+        # download the stopwords
+        nltk.download('stopwords')
 
-        :param training_set: An array of strings containing the path to the training data (Index 0) \
-            and the training labels (Index 1).
-        :param debug: Flag to enable/disable debug mode.
-
-        :return: NBModel
-        """
         # parse the training data and labels and convert them into pandas Series
-        # TODO: change to support dynamic files
         training_data = rq.get('http://www.apkc.net/data/csc_578d/assignment01/problem04/traindata.txt').text.splitlines()
         if training_data is not None:
             t_data_series = pd.Series(training_data)
@@ -217,7 +211,7 @@ class NaiveBayesTextClassifier(object):
             'label': t_labels_series
         })
 
-        # make a subset of the entire training set for debugging purposes
+        # make a custom subset of the entire training set for debugging purposes
         if NaiveBayesTextClassifier.MAKE_SUBSET_FOR_TRAINING:
             _0_messages = t_data_matrix.loc[t_data_matrix.label == '0', 'message'][0:NaiveBayesTextClassifier.TRAINING_SUBSET_SIZE]
             _0_labels = ['0' for _ in _0_messages]
@@ -234,22 +228,22 @@ class NaiveBayesTextClassifier(object):
                     pd.Series(_1_labels)
                 ])
             })
-            print(t_data_matrix)
 
+        # +++ DEBUG
         if NaiveBayesTextClassifier.DEBUG:
             print("DataFrame: (Future: Class 1, Wise Saying: Class 0)")
             print(t_data_matrix)
 
-        # iterate the documents and count vocabulary
-        for i, r in t_data_matrix.iterrows():
-            if i == 2:  # for debug
-                break
+        # +++ DEBUG
+        if NaiveBayesTextClassifier.DEBUG:
+            for i, r in t_data_matrix.iterrows():
+                if i == 2:  # for debug
+                    break
 
-            document = str(r['message'])
-            vocabulary = document.split(' ')
-            label = r['label']
+                document = str(r['message'])
+                vocabulary = document.split(' ')
+                label = r['label']
 
-            if NaiveBayesTextClassifier.DEBUG:
                 print("Document: {}".format(document))
                 print("Class: {}".format(label))
                 print("Vocabulary: {}".format(len(vocabulary)))
@@ -276,7 +270,7 @@ class NaiveBayesTextClassifier(object):
         # 4. compute likelihoods
         self.model.compute_likelihood()
 
-        # print for debug
+        # +++ DEBUG
         if NaiveBayesTextClassifier.SHOW_MODEL:
             print('')
             print('++++++')
@@ -284,23 +278,8 @@ class NaiveBayesTextClassifier(object):
 
         return self.model
 
-    def classify(
-            self,
-            model: NBModel,
-            testing_set: [str] = [],
-            debug: bool = False) -> None:
-        """
-        Function to classify text phrases into bins or classes using the Naïve Bayes classifier algorithm. It
-        will use the statistical model created with the training function.
-
-        :param testing_set: An array of strings containing the path to the data data (Index 0) \
-            and the labels (Index 1).
-        :param debug: Flag to enable/disable debug mode.
-
-        :return: None
-        """
+    def classify(self, model: NBModel, testing_set: [str] = [], debug: bool = False) -> None:
         # parse the training data and labels and convert them into pandas Series
-        # TODO: change to support dynamic files
         testing_data = rq.get('http://www.apkc.net/data/csc_578d/assignment01/problem04/traindata.txt').text.splitlines()
         if testing_data is not None:
             t_data_series = pd.Series(testing_data)
@@ -338,7 +317,6 @@ class NaiveBayesTextClassifier(object):
                     pd.Series(_1_labels)
                 ])
             })
-            # print(t_data_matrix)
 
         correct = 0
         class_0_lexicon = model.classes[0].get_class_lexicon()
@@ -354,14 +332,8 @@ class NaiveBayesTextClassifier(object):
 
             # the vocabulary MUST be common to both classes otherwise the algorithm is unbalanced
             # and it doesn't work, so we should intersect terms to both classes
-            common_vocabulary = []
-            for t in class_0_lexicon:
-                if class_1_lexicon.count(t) > 0:
-                    common_vocabulary.append(t)
-
-            for t in vocabulary:
-                if common_vocabulary.count(t) > 0:
-                    final_vocabulary.append(t)
+            common_vocabulary = [t for t in class_0_lexicon if t in class_1_lexicon]
+            final_vocabulary = [t for t in vocabulary if t in common_vocabulary]
 
             # compute probability for each class
             argmax = []
@@ -382,14 +354,18 @@ class NaiveBayesTextClassifier(object):
 
             # compute accuracy
             max_label = max(argmax, key=lambda e: e.value).label
-            result = utils.Colors.FAIL + 'FALSE' + utils.Colors.ENDC
+            result = Style.BRIGHT + Back.RED + 'INCORRECT' + Style.RESET_ALL
             if max_label == label:
                 correct += 1
-                result = utils.Colors.BOLD + 'TRUE' + utils.Colors.ENDC
+                result = Style.BRIGHT + Back.GREEN + 'CORRECT' + Style.RESET_ALL
 
-            print(utils.Colors.BOLD + "Message:" + utils.Colors.ENDC + " {} ".format(document) + "{}".format(result))
+            txt = ''
+            txt += "- {} ".format(document)
+            txt += Style.BRIGHT + " [{}] ".format(NBClass.get_class_name(max_label)) + Style.RESET_ALL
+            txt += " {} ".format(result)
+            print(txt)
 
-        print(utils.Colors.BOLD + "=======" + utils.Colors.ENDC)
-        print(utils.Colors.BOLD + "RESULT:" + utils.Colors.ENDC)
-        print(utils.Colors.BOLD + "> Classifier Accuracy: \"{0}%\"".format((correct / t_data_matrix.shape[0]) * 100) + utils.Colors.ENDC)
-        print(utils.Colors.BOLD + "=======" + utils.Colors.ENDC)
+        print(Style.BRIGHT + "=======" + Style.RESET_ALL)
+        print(Style.BRIGHT + "RESULT:" + Style.RESET_ALL)
+        print(Style.BRIGHT + "> Classifier Accuracy: \"{0}%\"".format((correct / t_data_matrix.shape[0]) * 100) + Style.RESET_ALL)
+        print(Style.BRIGHT + "=======" + Style.RESET_ALL)

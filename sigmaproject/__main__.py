@@ -2,11 +2,9 @@
 
 """
 ==--------------------------------------------==
-==             SigmaProject v0.1              ==
-==                                            ==
-== WS: https://github.com/k-zen/SigmaProject  ==
+== SigmaProject v0.1                          ==
+== https://github.com/k-zen/SigmaProject      ==
 == Author: Andreas Koenzen <akoenzen@uvic.ca> ==
-==                                            ==
 == -------------------------------------------==
 == Disclaimer: NOT to be used in production.  ==
 ==             ONLY for educational purposes. ==
@@ -44,7 +42,7 @@ Options:
             Type #1: Cookie problem from book Think Bayes
 
         Classifier:
-            Type #1: Naive Bayes Text Classifier
+            Type #1: Naive Bayes Text Classifier. Done for CSC 578D at UVic.
             Type #2: Decision Tree / ID3
 
         Regression:
@@ -193,7 +191,8 @@ def main(argv=None):
                     print(utils.Colors.FAIL + 'ERROR: Input or output not defined.' + utils.Colors.ENDC)
                     return 2
 
-                nbtc.NaiveBayesTextClassifier().classify(model=nbtc.NaiveBayesTextClassifier().train())
+                classifier = nbtc.NaiveBayesTextClassifier()
+                classifier.classify(model=classifier.train())
             else:
                 print(utils.Colors.FAIL + 'ERROR: The type is invalid.' + utils.Colors.ENDC)
                 return 2

@@ -1,11 +1,6 @@
 # -*- coding: utf-8 -*-
 
-
 class Colors:
-    """
-    Terminal colors.
-    """
-
     def __init__(self):
         pass
 
@@ -16,7 +11,4 @@ class Colors:
 
 
 class Terminal:
-    """
-    Terminal interactions.
-    """
     CLEAR_CONSOLE = "\033[H\033[J"
