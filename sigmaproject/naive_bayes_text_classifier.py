@@ -2,10 +2,8 @@
 
 import pandas as pd
 import requests as rq
-import nltk
 
 from colorama import Back, Style
-from nltk.corpus import stopwords
 
 
 class NBClassification(object):
@@ -27,7 +25,7 @@ class NBTerm(object):
 
 
 class NBDocument(object):
-    USE_FILTERED: bool = True
+    USE_FILTERED: bool = False
 
     def __init__(self, raw_terms: [NBTerm], filtered_terms: [NBTerm]):
         self.raw_terms: [NBTerm] = raw_terms  # stopwords included
@@ -75,7 +73,7 @@ class NBClass(object):
         # break the document into terms
         terms = message.split(' ')
         raw_terms = [NBTerm(term=t) for t in terms]
-        filtered_terms = [NBTerm(term=t) for t in terms if t not in stopwords.words('english')]
+        filtered_terms = raw_terms  # legacy, no use
         self.documents.append(NBDocument(raw_terms=raw_terms, filtered_terms=filtered_terms))
 
     def compute_likelihood(self, lexicon: [str]) -> None:
@@ -190,9 +188,6 @@ class NaiveBayesTextClassifier(object):
         pass
 
     def train(self, training_set: [str] = [], debug: bool = False) -> NBModel:
-        # download the stopwords
-        nltk.download('stopwords')
-
         # parse the training data and labels and convert them into pandas Series
         training_data = rq.get('http://www.apkc.net/data/csc_578d/assignment01/problem04/traindata.txt').text.splitlines()
         if training_data is not None:
@@ -262,11 +257,11 @@ class NaiveBayesTextClassifier(object):
 
     def classify(self, model: NBModel, testing_set: [str] = [], debug: bool = False) -> None:
         # parse the training data and labels and convert them into pandas Series
-        testing_data = rq.get('http://www.apkc.net/data/csc_578d/assignment01/problem04/traindata.txt').text.splitlines()
+        testing_data = rq.get('http://www.apkc.net/data/csc_578d/assignment01/problem04/testdata.txt').text.splitlines()
         if testing_data is not None:
             t_data_series = pd.Series(testing_data)
 
-        testing_labels = rq.get('http://www.apkc.net/data/csc_578d/assignment01/problem04/trainlabels.txt').text.splitlines()
+        testing_labels = rq.get('http://www.apkc.net/data/csc_578d/assignment01/problem04/testlabels.txt').text.splitlines()
         if testing_labels is not None:
             t_labels_series = pd.Series(testing_labels)
 

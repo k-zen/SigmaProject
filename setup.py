@@ -24,7 +24,6 @@ setup(
         'kiwisolver',
         'Markdown',
         'matplotlib',
-        'nltk',
         'numpy',
         'paho-mqtt',
         'pandas',
