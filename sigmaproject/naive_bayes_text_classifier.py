@@ -4,7 +4,7 @@ import pandas as pd
 import requests as rq
 import nltk
 
-from colorama import Fore, Back, Style
+from colorama import Back, Style
 from nltk.corpus import stopwords
 
 
@@ -27,7 +27,7 @@ class NBTerm(object):
 
 
 class NBDocument(object):
-    USE_FILTERED: bool = False
+    USE_FILTERED: bool = True
 
     def __init__(self, raw_terms: [NBTerm], filtered_terms: [NBTerm]):
         self.raw_terms: [NBTerm] = raw_terms  # stopwords included
@@ -65,7 +65,7 @@ class NBClass(object):
         for d in self.documents:
             str += "\t\t{}\n".format(d)
         str += "\tPrior: {}\n".format(self.prior)
-        str += "\tLikelihoods:\n".format(len(self.likelihoods))
+        str += "\tLikelihoods: {}\n".format(len(self.likelihoods))
         for l in self.likelihoods:
             str += "\t\t{}\n".format(l)
 
@@ -79,17 +79,16 @@ class NBClass(object):
         self.documents.append(NBDocument(raw_terms=raw_terms, filtered_terms=filtered_terms))
 
     def compute_likelihood(self, lexicon: [str]) -> None:
-        # compute unique and all terms in all documents in the class
-        unique_terms = list({t.term for d in self.documents for t in d.get_terms()})
-        all_terms = [t.term for d in self.documents for t in d.get_terms()]
+        # this will include ALL terms in the class, INCLUDED repeated terms!!!
+        class_terms = [t.term for d in self.documents for t in d.get_terms()]  # ALL TERMS!!!
 
-        # now for each term in unique compute its likelihood and add to the list of likelihoods
+        # now for each term in lexicon compute its likelihood and add to the list of likelihoods
         # likelihood = occurrences of term / all terms
-        for t in unique_terms:
+        for t in lexicon:
             # compute numerator. add 1 to avoid the zero-frequency problem
-            numerator = all_terms.count(t) + 1
+            numerator = class_terms.count(t) + 1
             # compute denominator. add count of lexicon to avoid zero-frequency problem
-            denominator = len(all_terms) + len(lexicon)
+            denominator = len(class_terms) + len(lexicon)
             # add to the likelihood list IF not present
             flag = False
             for e in self.likelihoods:
@@ -162,7 +161,11 @@ class NBModel(object):
 
     def compute_lexicon(self) -> None:
         # vocabulary should NOT contain duplicates
-        self.lexicon = [[[t for t in d.get_terms() if t.term not in self.lexicon] for d in c.documents] for c in self.classes]
+        for c in self.classes:
+            for d in c.documents:
+                for t in d.get_terms():
+                    if t.term not in self.lexicon:
+                        self.lexicon.append(t.term)
 
     def compute_likelihood(self) -> None:
         for c in self.classes:
@@ -180,7 +183,7 @@ class NaiveBayesTextClassifier(object):
     MAKE_SUBSET_FOR_TRAINING = False
     TRAINING_SUBSET_SIZE = 2
     MAKE_SUBSET_FOR_TESTING = False
-    TESTING_SUBSET_SIZE = 40
+    TESTING_SUBSET_SIZE = 2
 
     def __init__(self):
         self.model: NBModel = NBModel()
@@ -194,16 +197,10 @@ class NaiveBayesTextClassifier(object):
         training_data = rq.get('http://www.apkc.net/data/csc_578d/assignment01/problem04/traindata.txt').text.splitlines()
         if training_data is not None:
             t_data_series = pd.Series(training_data)
-            if NaiveBayesTextClassifier.DEBUG:
-                print("Training Data:")
-                print(t_data_series)
 
         training_labels = rq.get('http://www.apkc.net/data/csc_578d/assignment01/problem04/trainlabels.txt').text.splitlines()
         if training_labels is not None:
             t_labels_series = pd.Series(training_labels)
-            if NaiveBayesTextClassifier.DEBUG:
-                print("Training Labels:")
-                print(t_labels_series)
 
         # combine both series into a DataFrame
         t_data_matrix = pd.DataFrame({
@@ -233,21 +230,6 @@ class NaiveBayesTextClassifier(object):
         if NaiveBayesTextClassifier.DEBUG:
             print("DataFrame: (Future: Class 1, Wise Saying: Class 0)")
             print(t_data_matrix)
-
-        # +++ DEBUG
-        if NaiveBayesTextClassifier.DEBUG:
-            for i, r in t_data_matrix.iterrows():
-                if i == 2:  # for debug
-                    break
-
-                document = str(r['message'])
-                vocabulary = document.split(' ')
-                label = r['label']
-
-                print("Document: {}".format(document))
-                print("Class: {}".format(label))
-                print("Vocabulary: {}".format(len(vocabulary)))
-                print('---')
 
         # construct the model
         # 1. save classes, documents, terms
@@ -283,16 +265,10 @@ class NaiveBayesTextClassifier(object):
         testing_data = rq.get('http://www.apkc.net/data/csc_578d/assignment01/problem04/traindata.txt').text.splitlines()
         if testing_data is not None:
             t_data_series = pd.Series(testing_data)
-            if NaiveBayesTextClassifier.DEBUG:
-                print("Testing Data:")
-                print(t_data_series)
 
         testing_labels = rq.get('http://www.apkc.net/data/csc_578d/assignment01/problem04/trainlabels.txt').text.splitlines()
         if testing_labels is not None:
             t_labels_series = pd.Series(testing_labels)
-            if NaiveBayesTextClassifier.DEBUG:
-                print("Testing Labels:")
-                print(t_labels_series)
 
         # combine both series into a DataFrame
         t_data_matrix = pd.DataFrame({
@@ -318,54 +294,47 @@ class NaiveBayesTextClassifier(object):
                 ])
             })
 
-        correct = 0
-        class_0_lexicon = model.classes[0].get_class_lexicon()
-        class_1_lexicon = model.classes[1].get_class_lexicon()
-
         # compute the odds for each class
+        correct_instances = 0
         for _, r in t_data_matrix.iterrows():
             document = str(r['message'])
             vocabulary = document.split(' ')
             label = r['label']
-
-            final_vocabulary = []
-
-            # the vocabulary MUST be common to both classes otherwise the algorithm is unbalanced
-            # and it doesn't work, so we should intersect terms to both classes
-            common_vocabulary = [t for t in class_0_lexicon if t in class_1_lexicon]
-            final_vocabulary = [t for t in vocabulary if t in common_vocabulary]
 
             # compute probability for each class
             argmax = []
             for c in model.classes:
                 factors: str = ""
                 v = c.prior
-                factors += "{}*".format(v)
-                for t in final_vocabulary:
+                factors += "{} *".format(v)
+                for t in vocabulary:
                     likelihood = c.get_likelihood(term=t)
                     if likelihood is not None:
                         v *= likelihood
-                        factors += "{}*".format(likelihood)
+                        factors += " {} *".format(likelihood)
 
-                if len(final_vocabulary) == 0:
+                if len(vocabulary) == 0:
                     v = 0
 
                 argmax.append(NBClassification(label=c.label, value=v))
+
+                if NaiveBayesTextClassifier.DEBUG:
+                    print("Class {2} => {0} = {1}".format(factors.strip('*'), v, c.label))
 
             # compute accuracy
             max_label = max(argmax, key=lambda e: e.value).label
             result = Style.BRIGHT + Back.RED + 'INCORRECT' + Style.RESET_ALL
             if max_label == label:
-                correct += 1
+                correct_instances += 1
                 result = Style.BRIGHT + Back.GREEN + 'CORRECT' + Style.RESET_ALL
 
             txt = ''
             txt += "- {} ".format(document)
-            txt += Style.BRIGHT + " [{}] ".format(NBClass.get_class_name(max_label)) + Style.RESET_ALL
+            txt += Style.BRIGHT + " [{0}:{1}] ".format(NBClass.get_class_name(max_label), max_label) + Style.RESET_ALL
             txt += " {} ".format(result)
             print(txt)
 
         print(Style.BRIGHT + "=======" + Style.RESET_ALL)
         print(Style.BRIGHT + "RESULT:" + Style.RESET_ALL)
-        print(Style.BRIGHT + "> Classifier Accuracy: \"{0}%\"".format((correct / t_data_matrix.shape[0]) * 100) + Style.RESET_ALL)
+        print(Style.BRIGHT + "> Classifier Accuracy: \"{0}%\"".format((correct_instances / t_data_matrix.shape[0]) * 100) + Style.RESET_ALL)
         print(Style.BRIGHT + "=======" + Style.RESET_ALL)
