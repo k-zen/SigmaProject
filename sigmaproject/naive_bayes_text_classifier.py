@@ -189,11 +189,15 @@ class NaiveBayesTextClassifier(object):
 
     def train(self, training_set: [str] = [], debug: bool = False) -> NBModel:
         # parse the training data and labels and convert them into pandas Series
-        training_data = rq.get('http://www.apkc.net/data/csc_578d/assignment01/problem04/traindata.txt').text.splitlines()
+        training_data = rq.get(
+            'http://www.apkc.net/data/csc_578d/assignment01/problem04/traindata.txt'
+        ).text.splitlines()
         if training_data is not None:
             t_data_series = pd.Series(training_data)
 
-        training_labels = rq.get('http://www.apkc.net/data/csc_578d/assignment01/problem04/trainlabels.txt').text.splitlines()
+        training_labels = rq.get(
+            'http://www.apkc.net/data/csc_578d/assignment01/problem04/trainlabels.txt'
+        ).text.splitlines()
         if training_labels is not None:
             t_labels_series = pd.Series(training_labels)
 
@@ -205,9 +209,15 @@ class NaiveBayesTextClassifier(object):
 
         # make a custom subset of the entire training set for debugging purposes
         if NaiveBayesTextClassifier.MAKE_SUBSET_FOR_TRAINING:
-            _0_messages = t_data_matrix.loc[t_data_matrix.label == '0', 'message'][0:NaiveBayesTextClassifier.TRAINING_SUBSET_SIZE]
+            _0_messages = t_data_matrix.loc[
+                              t_data_matrix.label == '0',
+                              'message'][0:NaiveBayesTextClassifier.TRAINING_SUBSET_SIZE
+                          ]
             _0_labels = ['0' for _ in _0_messages]
-            _1_messages = t_data_matrix.loc[t_data_matrix.label == '1', 'message'][0:NaiveBayesTextClassifier.TRAINING_SUBSET_SIZE]
+            _1_messages = t_data_matrix.loc[
+                              t_data_matrix.label == '1',
+                              'message'][0:NaiveBayesTextClassifier.TRAINING_SUBSET_SIZE
+                          ]
             _1_labels = ['1' for _ in _1_messages]
             # replace the DataFrame
             t_data_matrix = pd.DataFrame({
@@ -257,11 +267,15 @@ class NaiveBayesTextClassifier(object):
 
     def classify(self, model: NBModel, testing_set: [str] = [], debug: bool = False) -> None:
         # parse the training data and labels and convert them into pandas Series
-        testing_data = rq.get('http://www.apkc.net/data/csc_578d/assignment01/problem04/testdata.txt').text.splitlines()
+        testing_data = rq.get(
+            'http://www.apkc.net/data/csc_578d/assignment01/problem04/testdata.txt'
+        ).text.splitlines()
         if testing_data is not None:
             t_data_series = pd.Series(testing_data)
 
-        testing_labels = rq.get('http://www.apkc.net/data/csc_578d/assignment01/problem04/testlabels.txt').text.splitlines()
+        testing_labels = rq.get(
+            'http://www.apkc.net/data/csc_578d/assignment01/problem04/testlabels.txt'
+        ).text.splitlines()
         if testing_labels is not None:
             t_labels_series = pd.Series(testing_labels)
 
@@ -273,9 +287,15 @@ class NaiveBayesTextClassifier(object):
 
         # make a subset of the entire training set for debugging purposes
         if NaiveBayesTextClassifier.MAKE_SUBSET_FOR_TESTING:
-            _0_messages = t_data_matrix.loc[t_data_matrix.label == '0', 'message'][0:NaiveBayesTextClassifier.TESTING_SUBSET_SIZE]
+            _0_messages = t_data_matrix.loc[
+                              t_data_matrix.label == '0',
+                              'message'][0:NaiveBayesTextClassifier.TESTING_SUBSET_SIZE
+                          ]
             _0_labels = ['0' for _ in _0_messages]
-            _1_messages = t_data_matrix.loc[t_data_matrix.label == '1', 'message'][0:NaiveBayesTextClassifier.TESTING_SUBSET_SIZE]
+            _1_messages = t_data_matrix.loc[
+                              t_data_matrix.label == '1',
+                              'message'][0:NaiveBayesTextClassifier.TESTING_SUBSET_SIZE
+                          ]
             _1_labels = ['1' for _ in _1_messages]
             # replace the DataFrame
             t_data_matrix = pd.DataFrame({
@@ -331,5 +351,7 @@ class NaiveBayesTextClassifier(object):
 
         print(Style.BRIGHT + "=======" + Style.RESET_ALL)
         print(Style.BRIGHT + "RESULT:" + Style.RESET_ALL)
-        print(Style.BRIGHT + "> Classifier Accuracy: \"{0}%\"".format((correct_instances / t_data_matrix.shape[0]) * 100) + Style.RESET_ALL)
+        print(Style.BRIGHT + "> Classifier Accuracy: \"{0}%\"".format(
+            (correct_instances / t_data_matrix.shape[0]) * 100
+        ) + Style.RESET_ALL)
         print(Style.BRIGHT + "=======" + Style.RESET_ALL)
