@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-import sigmaproject.utils as utils
 import random
 
 from math import *
+from colorama import Style
 
 
 class MonteCarlo:
@@ -20,7 +20,7 @@ class MonteCarlo:
         pass
 
     @staticmethod
-    def area_under_curve(iterations, function, xa, xb, plot):
+    def area_under_curve(iterations, function, xa, xb):
         """
         Uses the Monte Carlo procedure to compute the area under the curve for
         a given function (Numerical integration). The logic for this method was extracted
@@ -37,7 +37,6 @@ class MonteCarlo:
         :param function:   The f(x)
         :param xa:         The X value of *a*.
         :param xb:         The X value of *b*.
-        :param plot:       If TRUE a scatter plot will be generated.
 
         :return: void
         """
@@ -58,8 +57,8 @@ class MonteCarlo:
 
         ev = ((xb - xa) / n) * sum
 
-        print(utils.Colors.BOLD + "=======" + utils.Colors.ENDC)
-        print(utils.Colors.BOLD + "RESULT:" + utils.Colors.ENDC)
-        print(utils.Colors.BOLD + "> Area of E: \"{0}\"".format(ev) + utils.Colors.ENDC)
-        print(utils.Colors.BOLD + "> Error Margin: +-\"{0}\"".format(1 / n ** 0.5) + utils.Colors.ENDC)
-        print(utils.Colors.BOLD + "=======" + utils.Colors.ENDC)
+        print(Style.BRIGHT + "=======" + Style.RESET_ALL)
+        print(Style.BRIGHT + "RESULT:" + Style.RESET_ALL)
+        print(Style.BRIGHT + "> Area of E: \"{0}\"".format(ev) + Style.RESET_ALL)
+        print(Style.BRIGHT + "> Error Margin: +-\"{0}\"".format(1 / n ** 0.5) + Style.RESET_ALL)
+        print(Style.BRIGHT + "=======" + Style.RESET_ALL)

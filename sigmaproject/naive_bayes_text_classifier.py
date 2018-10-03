@@ -268,13 +268,13 @@ class NaiveBayesTextClassifier(object):
     def classify(self, model: NBModel, testing_set: [str] = [], debug: bool = False) -> None:
         # parse the training data and labels and convert them into pandas Series
         testing_data = rq.get(
-            'http://www.apkc.net/data/csc_578d/assignment01/problem04/testdata.txt'
+            'http://www.apkc.net/data/csc_578d/assignment01/problem04/traindata.txt'
         ).text.splitlines()
         if testing_data is not None:
             t_data_series = pd.Series(testing_data)
 
         testing_labels = rq.get(
-            'http://www.apkc.net/data/csc_578d/assignment01/problem04/testlabels.txt'
+            'http://www.apkc.net/data/csc_578d/assignment01/problem04/trainlabels.txt'
         ).text.splitlines()
         if testing_labels is not None:
             t_labels_series = pd.Series(testing_labels)

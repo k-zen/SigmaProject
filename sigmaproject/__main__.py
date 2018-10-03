@@ -13,11 +13,7 @@
 Uses:
 =====
 sigmaproject [--monte-carlo] [-t=type] [i=1000] [-f=function] [-a=0] [-b=1]
-             [--bayes]       [-t=type] TODO
-             [--classifier]  [-t=type] [--input=] [--output]
-             [--regression]  [-t=type] TODO
-             [--tensorflow]  [-t=type] TODO
-             [--clustering]  [-t=type] TODO
+             [--classifier]  [-t=type]
 
 Options:
 ========
@@ -25,11 +21,7 @@ Options:
     ====================
     --monte-carlo Uses the "Monte Carlo" procedure to estimate some value
                   defined by the parameter *-t*.
-    --bayes       Bayesian computation.
     --classifier  Executes a classifier to perform some classification task.
-    --regression  Executes a regression algorithm on some data set.
-    --tensorflow  Executes an algorithm using tensorflow library on some data set.
-    --clustering  Executes a clustering algorithm on some data set.
 
     Parameters:
     ===========
@@ -38,50 +30,24 @@ Options:
         Monte Carlo:
             Type #1: Numerical Integration. Calculate the area under the curve defined by parameter *f* and between the interval (b - a).
 
-        Bayes:
-            Type #1: Cookie problem from book Think Bayes
-
         Classifier:
             Type #1: Naive Bayes Text Classifier. Done for CSC 578D at UVic.
-            Type #2: Decision Tree / ID3
-
-        Regression:
-            Type #1: Simple Linear Regression TODO
-            ========
-            Makes a prediction using a Simple Linear Regression model.
-
-        TensorFlow:
-            Type #1: TODO
-            ========
-            TODO
-
-        Clustering:
-        ===========
-            Type #1: DBSCAN TODO
-            ========
-            TODO
 
     -i The amount of iterations to perform.
     -a The X coordinate of *a*. Must the smaller than *b*.
     -b The X coordinate of *b*. Must be bigger than *a*.
-
-    Others:
-    =======
-    --plot   Plot the aproximation using a scatter plot.
-    --input  The input file to classify. Usually in text format, where each line is a sentence.
-    --output The output file. Should be a file name.
 
 Flags:
 ======
     --help Shows this message.
 """
 
-import sigmaproject.utils as utils
-import sigmaproject.cookie as cookie
 import sigmaproject.montecarlo as montecarlo
 import sigmaproject.naive_bayes_text_classifier as nbtc
 import getopt
 import sys
+
+from colorama import Back, Style
 
 
 class Usage(Exception):
@@ -100,9 +66,6 @@ def main(argv=None):
     function = ''
     xa = -1.0
     xb = -1.0
-    plot = False
-    input: str = ''
-    output: str = ''
 
     if argv is None:
         argv = sys.argv
@@ -115,15 +78,7 @@ def main(argv=None):
                     'help',
 
                     'monte-carlo',
-                    'bayes',
-                    'classifier',
-                    'regression',
-                    'tensorflow',
-                    'clustering'
-
-                    'plot',
-                    'input',
-                    'output'
+                    'classifier'
                 ]
             )
             if not opts:
@@ -139,22 +94,8 @@ def main(argv=None):
                 usage()
             elif opt == '--monte-carlo':
                 command = 1
-            elif opt == '--bayes':
-                command = 2
             elif opt == '--classifier':
-                command = 3
-            elif opt == '--regression':
-                command = 4
-            elif opt == '--tensorflow':
-                command = 5
-            elif opt == '--clustering':
-                command = 6
-            elif opt == '--plot':
-                plot = True
-            elif opt == '--input':
-                input = str(arg)
-            elif opt == '--output':
-                output = str(arg)
+                command = 2
             elif opt == '-t':
                 type = int(arg)
             elif opt == '-i':
@@ -168,55 +109,27 @@ def main(argv=None):
 
         if command == 1:  # Monte Carlo
             if function == '':
-                print(utils.Colors.FAIL + 'ERROR: Function not defined.' + utils.Colors.ENDC)
+                print(Back.RED + 'ERROR: Function not defined.' + Style.RESET_ALL)
                 return 2
             if xa == -1.0 or xb == -1.0:
-                print(utils.Colors.FAIL + 'ERROR: Interval not defined.' + utils.Colors.ENDC)
+                print(Back.RED + 'ERROR: Interval not defined.' + Style.RESET_ALL)
                 return 2
 
             if type == 1:
-                montecarlo.MonteCarlo.area_under_curve(iterations, function, xa, xb, plot)
+                montecarlo.MonteCarlo.area_under_curve(iterations, function, xa, xb)
             else:
-                print(utils.Colors.FAIL + 'ERROR: The type is invalid.' + utils.Colors.ENDC)
+                print(Back.RED + 'ERROR: The type is invalid.' + Style.RESET_ALL)
                 return 2
-        elif command == 2:  # Bayes
+        elif command == 2:  # Classifier
             if type == 1:
-                cookie.Cookie.compute()
-            else:
-                print(utils.Colors.FAIL + 'ERROR: The type is invalid.' + utils.Colors.ENDC)
-                return 2
-        elif command == 3:  # Classifier
-            if type == 1:
-                if False and (input == "" or output == ""):  # disable this for the moment. only deal with static urls
-                    print(utils.Colors.FAIL + 'ERROR: Input or output not defined.' + utils.Colors.ENDC)
-                    return 2
-
                 classifier = nbtc.NaiveBayesTextClassifier()
                 classifier.classify(model=classifier.train())
             else:
-                print(utils.Colors.FAIL + 'ERROR: The type is invalid.' + utils.Colors.ENDC)
-                return 2
-        elif command == 4:  # Regression
-            if type == 1:
-                return 2
-            else:
-                print(utils.Colors.FAIL + 'ERROR: The type is invalid.' + utils.Colors.ENDC)
-                return 2
-        elif command == 5:  # TensorFlow
-            if type == 1:
-                return 2
-            else:
-                print(utils.Colors.FAIL + 'ERROR: The type is invalid.' + utils.Colors.ENDC)
-                return 2
-        elif command == 6:  # Clustering
-            if type == 1:
-                return 2
-            else:
-                print(utils.Colors.FAIL + 'ERROR: The type is invalid.' + utils.Colors.ENDC)
+                print(Back.RED + 'ERROR: The type is invalid.' + Style.RESET_ALL)
                 return 2
     except Usage as err:
-        print(utils.Colors.FAIL + 'ERROR: {0}'.format(err.msg) + utils.Colors.ENDC)
-        print(utils.Colors.BOLD + 'INFO: For help use --help' + utils.Colors.ENDC)
+        print(Back.RED + 'ERROR: {0}'.format(err.msg) + Style.RESET_ALL)
+        print(Style.BRIGHT + 'INFO: For help use --help' + Style.RESET_ALL)
         return 2
 
 
