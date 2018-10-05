@@ -43,3 +43,4 @@ SigmaProject.egg-info/
 dist/
 docs/
 venv*
+.ipynb_checkpoints
