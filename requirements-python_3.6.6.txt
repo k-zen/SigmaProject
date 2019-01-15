@@ -13,6 +13,7 @@ entrypoints==0.2.3
 geojson==2.4.1
 gitdb2==2.0.5
 GitPython==2.1.11
+h5py==2.9.0
 idna==2.7
 ipykernel==5.0.0
 ipython==7.0.1
