@@ -1,5 +1,9 @@
-# Compiled source #
-###################
+# ======================= #
+# Author: Andreas Koenzen #
+# Date: 2019.08.01        #
+# ======================= #
+
+# ====== Compiled source
 *.com
 *.class
 *.dll
@@ -8,10 +12,7 @@
 *.so
 *.pyc
 
-# Packages #
-############
-# it's better to unpack these files and commit the raw source
-# git has its own built in compression methods
+# ====== Packages
 *.7z
 *.dmg
 *.gz
@@ -20,27 +21,25 @@
 #*.tar
 *.zip
 
-# Logs and databases #
-######################
+# ====== Logs and databases
 *.log
 *.sqlite
 
-# OS generated files #
-######################
+# ====== OS Generated Files
 .DS_Store
-ehthumbs.db
-Icon
-Thumbs.db
-.tmtags
+
+# ====== IDE Specific
 .idea
-tags
-vendor.tags
-tmtagsHistory
 *.sublime-project
 *.sublime-workspace
-.bundle
+
+# ====== Python & Jupyter Notebooks
+venv*/
+.ipynb_checkpoints/
 SigmaProject.egg-info/
 dist/
 docs/
-venv*
-.ipynb_checkpoints
+
+# ====== Git Configuration
+.gitconfig
+.gitattributes
