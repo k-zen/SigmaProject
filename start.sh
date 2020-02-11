@@ -47,8 +47,9 @@ PYTHON_VERSION="3.6.6"
 export PYENV_VERSION=${PYTHON_VERSION}
 
 eval "$(pyenv init -)" # Important for "pyenv shell" command to work.
-eval "$(pyenv shell -)"
+eval "$(pyenv shell ${PYTHON_VERSION})"
 eval "source venv-${PYTHON_VERSION}/bin/activate"
 eval "clear"
 
 eval "git status"
+
