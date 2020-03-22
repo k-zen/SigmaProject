@@ -27,7 +27,7 @@
 #
 
 # ============================================================ #
-# Edited by K-Zen on 2019.06.20.                               #
+# Edited by K-Zen on 2020.03.21.                               #
 # Script to start a custom Python version and a custom virtual #
 # environment.                                                 #
 #                                                              #
@@ -47,8 +47,10 @@ PYTHON_VERSION="3.6.6"
 export PYENV_VERSION=${PYTHON_VERSION}
 
 eval "$(pyenv init -)" # Important for "pyenv shell" command to work.
-eval "$(pyenv shell -)"
+eval "$(pyenv shell ${PYTHON_VERSION})"
 eval "source venv-${PYTHON_VERSION}/bin/activate"
 eval "clear"
 
+# Add flag *--watch* to enable development of plugins mode.
 eval "jupyter lab notebooks --no-browser"
+
