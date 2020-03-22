@@ -38,7 +38,5 @@ setup(
     license='LICENSE',
     description='Statistics library.',
     entry_points={'console_scripts': ['sigmaproject = sigmaproject.__main__:main']},
-    install_requires=[
-        'scikit-learn', 'numpy', 'matplotlib', 'colorama', 'pandas', 'requests'
-    ]
+    install_requires=[]
 )
