@@ -68,8 +68,8 @@ Flags:
     --help Shows this message.
 """
 
-import sigmaproject.montecarlo as montecarlo
-import sigmaproject.naive_bayes_text_classifier as nbtc
+import sigmaproject.general.montecarlo as montecarlo
+import sigmaproject.classifiers.naive_bayes_text_classifier as nbtc
 import getopt
 import sys
 
