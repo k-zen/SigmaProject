@@ -27,7 +27,7 @@
 #
 
 # ============================================================ #
-# Edited by K-Zen on 2019.06.20.                               #
+# Edited by K-Zen on 2020.04.27.                               #
 # Script to start a custom Python version and a custom virtual #
 # environment.                                                 #
 #                                                              #
@@ -42,7 +42,7 @@
 # See: https://askubuntu.com/questions/965475/                 #
 #      cannot-activate-virtual-environment-with-a-shell-script #
 # ============================================================ #
-PYTHON_VERSION="3.6.6"
+PYTHON_VERSION="3.7.7"
 
 export PYENV_VERSION=${PYTHON_VERSION}
 
