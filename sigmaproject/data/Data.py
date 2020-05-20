@@ -26,6 +26,8 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 """
 
+import numpy as np
+
 from sklearn import *
 
 
@@ -65,5 +67,10 @@ class Data(object):
                 factor=0.5,
                 random_state=1
             )
+        elif type == 2:
+            rng = np.random.RandomState(0)
+            x = rng.randn(200, 2)
+            y = np.logical_xor(x[:, 0] > 0, x[:, 1] > 0).astype(int)
+            self.data = (x, y)
 
         return None

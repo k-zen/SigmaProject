@@ -61,6 +61,7 @@ import re
 import requests as rq
 import scipy.stats as ss
 import seaborn as sbn
+import urllib3
 
 from ast import literal_eval
 from colorama import Back, Style
@@ -81,13 +82,19 @@ from sklearn.neighbors import BallTree
 #         '../../'
 #     )
 # )
-from sigmaproject.data.Data import Data
-from sigmaproject.plotting.Plotting import Plotting
-from sigmaproject.neural_net.ActivationFunction import ActivationFunction
-from sigmaproject.neural_net.ActivationFunction import ActivationFunctionType
-from sigmaproject.neural_net.Layer import Layer
-from sigmaproject.neural_net.Layer import LayerType
-from sigmaproject.neural_net.Network import Network
+import sigmaproject.computer_vision.Activations as activations
+import sigmaproject.computer_vision.ConvLayer as conv_layer
+import sigmaproject.computer_vision.Convolution as convolution
+import sigmaproject.computer_vision.DummyNetwork as dummy_network
+import sigmaproject.computer_vision.PoolingLayer as pooling_layer
+import sigmaproject.computer_vision.Utilities as utilities
+import sigmaproject.data.Data as data
+import sigmaproject.plotting.Plotting as plotting
+import sigmaproject.neural_net.ActivationFunction as activation_function
+import sigmaproject.neural_net.ActivationFunction as activation_function_type
+import sigmaproject.neural_net.Layer as layer
+import sigmaproject.neural_net.Layer as layer_type
+import sigmaproject.neural_net.Network as network
 
 #
 # Output.

@@ -28,6 +28,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 import numpy as np
 
+from .ActivationFunction import ActivationFunction, ActivationFunctionType
 from .Layer import Layer
 
 
@@ -52,6 +53,7 @@ class Network(object):
     """
 
     def __init__(self):
+        self.initial_input = None
         self.layers = [Layer]  # Initialize to cero layers.
 
     def add_layer(self, layer: Layer) -> None:
@@ -67,6 +69,8 @@ class Network(object):
         return None
 
     def forward(self, initial_input: np.ndarray) -> None:
+        self.initial_input = initial_input
+
         self.layers[1].a = self.layers[1].af.activate(
             np.matmul(
                 initial_input,
@@ -88,7 +92,12 @@ class Network(object):
         dW2 = (self.layers[1].a.T).dot(delta3)
         db2 = np.sum(delta3, axis=0, keepdims=True)
 
-        delta2 = delta3.dot(self.layers[2].W.T) * (1 - np.power(self.layers[1].a, 2))
+        if self.layers[1].af.type == ActivationFunctionType.TANH:
+            delta2 = delta3.dot(self.layers[2].W.T) * (1 - np.power(self.layers[1].a, 2))
+        elif self.layers[1].af.type == ActivationFunctionType.SIGMOID:
+            delta2 = delta3.dot(self.layers[2].W.T) * (
+                    (1 - (np.exp(self.layers[1].a) / np.sum(np.exp(self.layers[1].a), axis=1, keepdims=True))) * (
+                    np.exp(self.layers[1].a) / np.sum(np.exp(self.layers[1].a), axis=1, keepdims=True)))
         dW1 = np.dot(X_train.T, delta2)
         db1 = np.sum(delta2, axis=0)
 

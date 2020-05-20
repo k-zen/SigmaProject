@@ -25,3 +25,24 @@ CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 """
+
+import numpy as np
+
+
+class Activations(object):
+    """
+    Collection of activation functions.
+    """
+    DEBUG = False
+    """
+    boolean: Flag to enable debug mode.
+    """
+
+    def __init__(self):
+        pass
+
+    @staticmethod
+    def relu(feature_maps: np.array) -> np.array:
+        zeros = np.zeros_like(feature_maps)
+
+        return np.where(feature_maps > zeros, feature_maps, zeros)

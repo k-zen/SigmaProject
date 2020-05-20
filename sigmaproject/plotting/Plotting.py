@@ -43,7 +43,7 @@ class Plotting(object):
     """
 
     def __init__(self):
-        self.fig = plt.figure(figsize=(10.0, 8.0))
+        self.fig = plt.figure(figsize=(8.0, 4.0))
         self.axis = self.fig.gca()
 
     def scatter(self, x: np.ndarray, y: np.ndarray) -> None:
@@ -63,6 +63,24 @@ class Plotting(object):
                           cmap=mpl.colors.ListedColormap(['red', 'blue']))
 
         self.axis.grid(True)
+        plt.box(on=None)
+
+        return None
+
+    def meshgrid(self, x, h: float = 0.01) -> None:
+        # Set min and max values and give it some padding.
+        x_min, x_max = x[:, 0].min() - .5, x[:, 0].max() + .5
+        y_min, y_max = x[:, 1].min() - .5, x[:, 1].max() + .5
+
+        # Generate a grid of points with distance h between them.
+        xx, yy = np.meshgrid(
+            np.arange(x_min, x_max, h),
+            np.arange(y_min, y_max, h)
+        )
+
+        self.axis.plot(xx, yy, marker='.', linestyle='none')
+
+        self.axis.grid(False)
         plt.box(on=None)
 
         return None
@@ -95,7 +113,7 @@ class Plotting(object):
         self.axis.contourf(xx,
                            yy,
                            z,
-                           cmap=mpl.colors.ListedColormap(['#D0E0EB', '#EBF7F8']))
+                           cmap=mpl.colors.ListedColormap(['#f4f4f4', '#cccccc']))
 
         self.axis.grid(True)
         plt.box(on=None)

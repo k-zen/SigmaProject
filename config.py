@@ -43,7 +43,6 @@ _ = HTML(
     "</style>"
 )
 
-_ = mpl.rcParams['animation.embed_limit'] = 100
 _ = plt.style.use(["default"])
 _ = plt.rcParams.update(
     {
@@ -62,3 +61,4 @@ _ = plt.rcParams.update(
         'grid.linewidth': 0.5
     }
 )
+_ = mpl.rcParams['animation.embed_limit'] = 100

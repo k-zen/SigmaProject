@@ -73,10 +73,6 @@ class ActivationFunction(object):
         if self.type == ActivationFunctionType.TANH:
             return np.tanh(output)
         elif self.type == ActivationFunctionType.SIGMOID:
-            return np.exp(output) / np.sum(np.exp(output),
-                                           axis=1,
-                                           keepdims=True)
-
-        # TODO: Implement other functions.
+            return np.exp(output) / np.sum(np.exp(output), axis=1, keepdims=True)
 
         return None
