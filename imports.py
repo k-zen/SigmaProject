@@ -82,19 +82,19 @@ from sklearn.neighbors import BallTree
 #         '../../'
 #     )
 # )
-import sigmaproject.computer_vision.Activations as activations
-import sigmaproject.computer_vision.ConvLayer as conv_layer
-import sigmaproject.computer_vision.Convolution as convolution
-import sigmaproject.computer_vision.DummyNetwork as dummy_network
-import sigmaproject.computer_vision.PoolingLayer as pooling_layer
-import sigmaproject.computer_vision.Utilities as utilities
-import sigmaproject.data.Data as data
-import sigmaproject.plotting.Plotting as plotting
-import sigmaproject.neural_net.ActivationFunction as activation_function
-import sigmaproject.neural_net.ActivationFunction as activation_function_type
-import sigmaproject.neural_net.Layer as layer
-import sigmaproject.neural_net.Layer as layer_type
-import sigmaproject.neural_net.Network as network
+import sigmaproject.computer_vision.activations as activations
+import sigmaproject.computer_vision.conv_layer as conv_layer
+import sigmaproject.computer_vision.convolution as convolution
+import sigmaproject.computer_vision.dummy_network as dummy_network
+import sigmaproject.computer_vision.pooling_layer as pooling_layer
+import sigmaproject.computer_vision.utilities as utilities
+import sigmaproject.data.data as data
+import sigmaproject.plotting.plotting as plotting
+import sigmaproject.neural_net.activation_function as activation_function
+import sigmaproject.neural_net.activation_function as activation_function_type
+import sigmaproject.neural_net.layer as layer
+import sigmaproject.neural_net.layer as layer_type
+import sigmaproject.neural_net.network as network
 
 #
 # Output.

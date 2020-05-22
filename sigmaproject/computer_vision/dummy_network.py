@@ -29,10 +29,10 @@ POSSIBILITY OF SUCH DAMAGE.
 import matplotlib.pyplot as plt
 import numpy as np
 
-from .Activations import Activations
-from .ConvLayer import ConvLayer
-from .PoolingLayer import PoolingLayer
-from .Utilities import Utilities
+from .activations import Activations
+from .conv_layer import ConvLayer
+from .pooling_layer import PoolingLayer
+from .utilities import Utilities
 
 
 class DummyNetwork(object):

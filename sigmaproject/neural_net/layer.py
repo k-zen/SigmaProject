@@ -29,7 +29,7 @@ POSSIBILITY OF SUCH DAMAGE.
 import numpy as np
 
 from enum import Enum
-from .ActivationFunction import ActivationFunction
+from .activation_function import ActivationFunction
 
 
 class LayerType(Enum):

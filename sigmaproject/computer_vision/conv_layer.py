@@ -28,7 +28,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 import numpy as np
 
-from .Convolution import Convolution
+from .convolution import Convolution
 
 
 class ConvLayer(object):

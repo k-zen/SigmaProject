@@ -28,7 +28,7 @@ POSSIBILITY OF SUCH DAMAGE.
 
 import numpy as np
 
-from .Utilities import Utilities
+from .utilities import Utilities
 from typing import Dict
 
 

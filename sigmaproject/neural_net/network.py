@@ -28,8 +28,8 @@ POSSIBILITY OF SUCH DAMAGE.
 
 import numpy as np
 
-from .ActivationFunction import ActivationFunction, ActivationFunctionType
-from .Layer import Layer
+from .activation_function import ActivationFunction, ActivationFunctionType
+from .layer import Layer
 
 
 class Network(object):
