@@ -3,9 +3,9 @@ argon2-cffi==20.1.0
 async-generator==1.10
 attrs==20.2.0
 backcall==0.2.0
-bleach==3.2.0
+bleach==3.2.1
 certifi==2020.6.20
-cffi==1.14.2
+cffi==1.14.3
 chardet==3.0.4
 chroma-py==0.1.0.dev1
 colorama==0.4.3
@@ -44,7 +44,7 @@ matplotlib==3.3.2
 mistune==0.8.4
 more-itertools==8.5.0
 nbclient==0.5.0
-nbconvert==6.0.3
+nbconvert==6.0.5
 nbdime==2.0.0
 nbformat==5.0.7
 nest-asyncio==1.4.0
@@ -64,7 +64,7 @@ prometheus-client==0.8.0
 prompt-toolkit==3.0.7
 ptyprocess==0.6.0
 pycparser==2.20
-Pygments==2.7.0
+Pygments==2.7.1
 pyparsing==2.4.7
 pyrsistent==0.17.3
 python-dateutil==2.8.1
@@ -83,7 +83,7 @@ sklearn==0.0
 smmap==3.0.4
 smmap2==3.0.1
 termcolor==1.1.0
-terminado==0.8.3
+terminado==0.9.1
 testpath==0.4.4
 threadpoolctl==2.1.0
 tornado==6.0.4
