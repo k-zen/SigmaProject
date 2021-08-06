@@ -96,8 +96,8 @@ class Plotting(object):
         :returns: Void
         """
         # Set min and max values and give it some padding.
-        x_min, x_max = x[:, 0].min() - .5, x[:, 0].max() + .5
-        y_min, y_max = x[:, 1].min() - .5, x[:, 1].max() + .5
+        x_min, x_max = x[:, 0].min() - 12.5, x[:, 0].max() + 12.5
+        y_min, y_max = x[:, 1].min() - 12.5, x[:, 1].max() + 12.5
 
         # Generate a grid of points with distance h between them.
         xx, yy = np.meshgrid(

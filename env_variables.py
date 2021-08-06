@@ -33,7 +33,6 @@ from IPython import get_ipython
 #
 # must be set to replicate
 DATA_SET_HOME = get_ipython().run_line_magic("env", "DATA_SETS_HOME")
-MAPBOX_TOKEN = get_ipython().run_line_magic("env", "MAPBOX_TOKEN")
 # The main path to work with.
 PATH = get_ipython().run_line_magic("env", "HOME")
 PATH = '{}/Temp'.format(PATH)
