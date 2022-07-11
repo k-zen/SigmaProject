@@ -31,8 +31,8 @@ from IPython import get_ipython
 #
 # Run magic commands.
 #
-# must be set to replicate
-DATA_SET_HOME = get_ipython().run_line_magic("env", "DATA_SETS_HOME")
-# The main path to work with.
+
+# Set environment variables.
+# DATA_SET_HOME = get_ipython().run_line_magic("env", "DATA_SETS_HOME")
 PATH = get_ipython().run_line_magic("env", "HOME")
 PATH = '{}/Temp'.format(PATH)

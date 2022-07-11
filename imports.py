@@ -26,9 +26,10 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGE.
 """
 
+import matplotlib_inline.backend_inline
+
 from IPython import get_ipython
 from IPython.core.interactiveshell import InteractiveShell
-from IPython.display import set_matplotlib_formats
 
 #
 # Run magic commands.
@@ -43,7 +44,7 @@ get_ipython().run_line_magic("autoreload", "2")
 # IPython configs.
 #
 InteractiveShell.ast_node_interactivity = 'all'
-set_matplotlib_formats('svg')
+matplotlib_inline.backend_inline.set_matplotlib_formats('svg')
 
 #
 # General imports.
@@ -57,10 +58,12 @@ import matplotlib.dates as mdates
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+import psycopg2
 import re
 import requests as rq
 import scipy.stats as ss
 import seaborn as sbn
+import sys
 import urllib3
 
 from ast import literal_eval
