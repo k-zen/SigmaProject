@@ -49,6 +49,7 @@ matplotlib_inline.backend_inline.set_matplotlib_formats('svg')
 #
 # General imports.
 #
+import csv
 import cv2 as cv
 import datetime
 import h5py as h5
@@ -57,12 +58,14 @@ import matplotlib.animation as ani
 import matplotlib.dates as mdates
 import matplotlib.pyplot as plt
 import numpy as np
+import os
 import pandas as pd
 import psycopg2
 import re
 import requests as rq
 import scipy.stats as ss
 import seaborn as sbn
+import sqlalchemy
 import sys
 import urllib3
 
